@@ -46,6 +46,12 @@ async def start_numbers(message: types.Message):
   await CheckNumbers.last_number.set()
 
 
+@dp.message_handler(lambda m: m.text == 'Обо мне', state=CheckNumbers)
+async def start_numbers(message: types.Message):
+  user = await User.query.where(User.id==int(message.from_user.id)).gino.first()
+  await message.answer(user)
+
+
 @dp.callback_query_handler(lambda c: c.data.split(' ')[0] == 'menu', state=CheckNumbers)
 async def menu(call: types.CallbackQuery, state: FSMContext):
   data = await state.get_data()
@@ -85,6 +91,8 @@ async def get_questions(call: types.CallbackQuery, state: FSMContext):
     }
   )
 
+  await User.update.values(questions=User.questions + 1).where(User.id==int(call.from_user.id)).gino.status()
+
   await call.message.edit_text(text=question[int(data[call.data])], reply_markup=check_question_keyboard(call.data))
 
 
@@ -94,8 +102,10 @@ async def check_responce(message: types.Message, state: FSMContext):
   question = data.get('question')
   questions = await Questions.query.where(Questions.ege_number==int(str(question.ege_number))).gino.all()
 
-
-  if 'Ответ: ' + message.text == question.answer:
+  true_answers = question.answer.split(' ')[1]
+  true_answers = true_answers.split('|')
+ 
+  if message.text in true_answers:
       await message.answer(text='Молодец! Ты ответил правильно', reply_markup=check_questions_keyboard_true(
             number=question.ege_number, url=question.url
           )
@@ -106,6 +116,7 @@ async def check_responce(message: types.Message, state: FSMContext):
             'question': questions[int(data[str(question.ege_number)]) + 1]
           }
         )
+      await User.update.values(correct_answers=User.correct_answers + 1).where(User.id==int(message.from_user.id)).gino.status()
 
   else:
     await message.answer('Неверно', reply_markup=check_questions_keyboard_false(

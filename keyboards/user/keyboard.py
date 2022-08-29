@@ -7,11 +7,12 @@ from .buttons import *
 
 def start_menu_keyboard():
 
-  markup = ReplyKeyboardMarkup(resize_keyboard=True)
+  markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
 
-  markup.row(START)
+  markup.add(START, ABOUT_USER)
 
   return markup
+
 
 
 def check_question_keyboard(number):
