@@ -6,3 +6,4 @@ DATABASE_URL = "postgresql://{user}:{password}@{host}:{port}/{database}".format(
     database="ege",
 )
 BOT_TOKEN = '5307492906:AAGgqkHU-TdkgHFGZmO7QjGN7GqHO-8-EQ0'
+ADMIN_IDS = []

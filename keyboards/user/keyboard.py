@@ -9,7 +9,7 @@ def start_menu_keyboard():
 
   markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
 
-  markup.add(START, ABOUT_USER)
+  markup.add(ABOUT_USER)
 
   return markup
 
@@ -68,14 +68,6 @@ def check_questions_keyboard_false(number, url):
                     web_app=WebAppInfo(url=url)
                 )
             )
-
-  markup.add(
-                InlineKeyboardButton(
-                            RESTART,
-                            callback_data=number
-                        )
-            )
-
 
   return markup
 
